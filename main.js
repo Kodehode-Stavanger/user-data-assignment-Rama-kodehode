@@ -3,51 +3,69 @@ const setts = [];
 const input = {
   exerciseInput: document.getElementById("input-cont"),
   exercise: document.getElementById("exercise-cont"),
-  addReps: document.getElementById("add-cont"),
+  addMinusCont: document.getElementById("add-minus-cont"),
   inputExercise: document.getElementById("input-exercise"),
-  addBtn: document.getElementById("add-exercise"),
+  addExercise: document.getElementById("add-exercise"),
+  displayCont: document.getElementById("display-cont"),
+
+  displayNumb: 0,
 
   display() {
     const inputTxt = this.inputExercise.value.trim();
     const txtElement = document.createElement("input");
     txtElement.className = "fake-txt";
-    // txtElement.readOnly = true;
     txtElement.value = inputTxt.toUpperCase();
     txtElement.style.border = "none";
     this.inputExercise.value = "";
+
     this.exercise.append(txtElement);
 
     this.displayNumber();
     this.saveSet();
-    this.makeBtn("-", () => this.incrementBtn());
-    this.makeBtn("+", () => this.decrementBtn());
+    this.makeBtn(this.addMinusCont, "-", () => this.decrementBtn());
+    this.makeBtn(this.addMinusCont, "+", () => this.incrementBtn());
   },
 
-  displayNumber() {
-    const displayNumber = document.createElement("h3");
-    displayNumber.className = "number";
-    displayNumber.textContent = "0";
-    this.addReps.append(displayNumber);
+  displayNumber(container) {
+    const displayNumbEl = document.createElement("h3");
+    displayNumbEl.className = "number";
+    displayNumbEl.textContent = this.displayNumb;
+    this.addMinusCont.append(displayNumbEl);
   },
 
-  makeBtn(nameBtn, onClick) {
+  makeBtn(container, nameBtn, onClick) {
     const btn = document.createElement("button");
     btn.textContent = nameBtn;
     btn.addEventListener("click", onClick);
-    this.addReps.append(btn);
-    return this.btn;
+    container.append(btn);
+    return btn;
   },
 
-  incrementBtn() {},
+  incrementBtn() {
+    this.displayNumb++;
+    this.updateDisplayNumb();
+  },
 
-  decrementBtn() {},
+  decrementBtn() {
+    if (this.displayNumb > 0) {
+      this.displayNumb--;
+      this.updateDisplayNumb();
+    }
+  },
 
-  saveSet() {
+  updateDisplayNumb() {
+    const displayNumbEl = document.querySelector(".number");
+    if (displayNumbEl) {
+      displayNumbEl.textContent = this.displayNumb;
+    }
+  },
+
+  saveSet(container) {
     const addSet = document.createElement("button");
     addSet.textContent = "ADD SET";
 
-    this.addReps.append(addSet);
+    this.addMinusCont.append(addSet);
   },
 };
 
-input.addBtn.addEventListener("click", () => input.display());
+input.addExercise.addEventListener("click", () => input.display());
