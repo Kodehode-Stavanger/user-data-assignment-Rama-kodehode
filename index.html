@@ -3,19 +3,55 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Fitness</title>
+    <title>Graph Practice</title>
     <link rel="stylesheet" href="style.css" />
     <script src="main.js" defer></script>
+    <!-- <script src="main.js" defer></script> -->
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
   </head>
   <body>
-    <div class="input-cont">
-      <input type="text" id="input-exercise" placeholder="EXERCISE" />
-      <button id="add-exercise">ADD</button>
-    </div>
-    <div class="flex">
-      <div id="display-cont">
-        <div id="exercise-cont"></div>
-        <div id="add-minus-cont"></div>
+    <div class="main-container">
+      <div class="timer-container">
+        <!-- Content for the first container -->
+        <div class="start-container">
+          <h1>00:00:00</h1>
+          <button class="start-btn">START</button>
+        </div>
+        <div class="paragraph-container">
+          <div class="lap-column">
+            <p>Paragraph 1</p>
+            <p>Paragraph 2</p>
+            <p>Paragraph 3</p>
+            <p>Paragraph 4</p>
+          </div>
+          <div class="btn-column">
+            <button>LAP</button>
+            <button>PAUSE</button>
+            <button>STOP</button>
+          </div>
+        </div>
+        <div class="input-container">
+          <form id="exercise-form">
+            <input type="text" placeholder="EXERCISE" id="input-exercise" />
+            <button type="submit" id="add-input">ADD</button>
+          </form>
+        </div>
+        <div class="train-card">
+          <div id="show-card" class="show-card"></div>
+          <div id="save-cont"></div>
+        </div>
+      </div>
+      <div class="result-container">
+        <button class="dropbtn" id="databtn">DATA</button>
+        <button class="deletebtn" id="deletebtn">DELETE</button>
+        <div class="dropdown-cont">
+          <p class="dropdown-content" id="data-dropdown"></p>
+        </div>
+      </div>
+      <div class="graph-container">
+        <div id="fitness-graph-container">
+          <div id="fitness-graph"></div>
+        </div>
       </div>
     </div>
   </body>

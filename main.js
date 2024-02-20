@@ -1,71 +1,179 @@
-const setts = [];
+const showExerciseName = document.getElementById("name-exercise");
+const createCards = document.getElementById("show-card");
+const inputExercise = document.getElementById("input-exercise");
+const graphContainer = document.getElementById("graph-container");
+const fitnessGraph = document.getElementById("fitness-graph");
+const exerciseForm = document.getElementById("exercise-form");
+const saveCont = document.getElementById("save-cont");
+const dataBtn = document.getElementById("databtn");
+const deleteBtn = document.getElementById("deletebtn");
+const dataDropdown = document.getElementById("data-dropdown");
+let savedSetts = getFromLocalStorage("setts");
+console.log(savedSetts);
 
-const input = {
-  exerciseInput: document.getElementById("input-cont"),
-  exercise: document.getElementById("exercise-cont"),
-  addMinusCont: document.getElementById("add-minus-cont"),
-  inputExercise: document.getElementById("input-exercise"),
-  addExercise: document.getElementById("add-exercise"),
-  displayCont: document.getElementById("display-cont"),
+let setts = [];
+let exerciseCounter = 1;
+let displayNumber = 0;
 
-  displayNumb: 0,
+exerciseForm.addEventListener("submit", function (event) {
+  event.preventDefault();
+  displayCard();
+});
 
-  display() {
-    const inputTxt = this.inputExercise.value.trim();
-    const txtElement = document.createElement("input");
-    txtElement.className = "fake-txt";
-    txtElement.value = inputTxt.toUpperCase();
-    txtElement.style.border = "none";
-    this.inputExercise.value = "";
+// Display card when form is submitted
+function displayCard() {
+  const inputName = inputExercise.value.trim();
 
-    this.exercise.append(txtElement);
+  const exerciseName = document.createElement("p");
+  const showReps = document.createElement("p");
+  const addSet = makeBtn("ADD SET", () => addSetBtn(inputName, displayNumber));
+  const decrementing = makeBtn("-", decrementBtn);
+  const incrementing = makeBtn("+", incrementBtn);
+  const saveBtn = makeBtn("SAVE", save);
 
-    this.displayNumber();
-    this.saveSet();
-    this.makeBtn(this.addMinusCont, "-", () => this.decrementBtn());
-    this.makeBtn(this.addMinusCont, "+", () => this.incrementBtn());
-  },
+  exerciseName.textContent = inputName.toUpperCase();
+  showReps.textContent = displayNumber;
 
-  displayNumber(container) {
-    const displayNumbEl = document.createElement("h3");
-    displayNumbEl.className = "number";
-    displayNumbEl.textContent = this.displayNumb;
-    this.addMinusCont.append(displayNumbEl);
-  },
+  createCards.append(
+    exerciseName,
+    showReps,
+    addSet,
+    decrementing,
+    incrementing
+  );
 
-  makeBtn(container, nameBtn, onClick) {
-    const btn = document.createElement("button");
-    btn.textContent = nameBtn;
-    btn.addEventListener("click", onClick);
-    container.append(btn);
-    return btn;
-  },
+  saveCont.append(saveBtn);
 
-  incrementBtn() {
-    this.displayNumb++;
-    this.updateDisplayNumb();
-  },
+  function incrementBtn() {
+    displayNumber++;
+    showReps.textContent = displayNumber;
+  }
 
-  decrementBtn() {
-    if (this.displayNumb > 0) {
-      this.displayNumb--;
-      this.updateDisplayNumb();
+  function decrementBtn() {
+    if (displayNumber > 0) {
+      displayNumber--;
+      showReps.textContent = displayNumber;
     }
-  },
+  }
 
-  updateDisplayNumb() {
-    const displayNumbEl = document.querySelector(".number");
-    if (displayNumbEl) {
-      displayNumbEl.textContent = this.displayNumb;
+  function save() {
+    // Save setts array to local storage
+    saveToLocalStorage("setts", setts);
+
+    // Reset displayCard and graph
+    clearDisplayCard();
+    clearGraph();
+  }
+}
+
+function displaySavedData() {
+  if (savedSetts) {
+    dataDropdown.innerHTML = "";
+
+    // Create dropdown items for each
+    savedSetts.forEach((item) => {
+      const listItem = document.createElement("p");
+      listItem.textContent = `${item.exerciseName}: ${item.reps} `;
+
+      dataDropdown.append(listItem);
+    });
+  }
+}
+
+function clearDisplayCard() {
+  inputExercise.value = "";
+  displayNumber = 0;
+  createCards.textContent = "";
+  saveCont.textContent = "";
+
+  exerciseCounter = 1;
+}
+
+// Function to add sets to an array
+function addSetBtn(exerciseName, displayNumber) {
+  const updatedExerciseName = exerciseName + " " + exerciseCounter;
+  const setData = {
+    exerciseName: updatedExerciseName,
+    reps: displayNumber,
+  };
+  setts.push(setData);
+  console.log(setts);
+
+  exerciseCounter++;
+
+  createGraph();
+}
+
+function saveToLocalStorage(key, value) {
+  localStorage.setItem(key, JSON.stringify(value));
+}
+
+function getFromLocalStorage(key) {
+  const item = localStorage.getItem(key);
+  return item ? JSON.parse(item) : null;
+}
+
+function clearLocalStorage() {
+  localStorage.clear();
+}
+
+// DataBtn listen
+dataBtn.addEventListener("click", () => {
+  if (savedSetts) {
+    setts = savedSetts;
+  }
+  createGraph();
+  displaySavedData();
+});
+
+deleteBtn.addEventListener("click", () => {
+  clearLocalStorage();
+  dataDropdown.innerHTML = "";
+  savedSetts = null;
+  setts = [];
+  clearGraph();
+});
+
+// Function to create a button
+function makeBtn(nameBtn, onClick) {
+  const btn = document.createElement("button");
+  btn.textContent = nameBtn;
+  btn.addEventListener("click", onClick);
+  return btn;
+}
+
+// Function to create graph
+function createGraph() {
+  const maxValue = Math.max(...setts.map((point) => point.reps));
+
+  // Graph colors by its percentage
+  const colors = setts.map((point) => {
+    const percentage = (point.reps / maxValue) * 100;
+    if (percentage >= 80) {
+      return "rgba(0,200,0,0.6)";
+    } else if (percentage >= 50) {
+      return "rgba(200,200,0,0.6)";
+    } else {
+      return "rgba(200,0,0,0.6)";
     }
-  },
+  });
 
-  saveSet(container) {
-    const addSet = document.createElement("button");
-    addSet.textContent = "ADD SET";
+  const data = [
+    {
+      x: setts.map((point) => point.exerciseName),
+      y: setts.map((point) => point.reps),
+      type: "bar",
+      orientation: "v",
+      marker: { color: colors },
+    },
+  ];
 
-    this.addMinusCont.append(addSet);
-  },
-};
+  const graphHeader = { title: "EXERCISE" };
 
-input.addExercise.addEventListener("click", () => input.display());
+  Plotly.react("fitness-graph", data, graphHeader);
+}
+
+// Clear graph
+function clearGraph() {
+  fitnessGraph.innerHTML = "";
+}
