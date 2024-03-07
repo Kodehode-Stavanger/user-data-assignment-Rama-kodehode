@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Graph Practice</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://cdn.plot.ly/plotly-latest.min.js" defer></script>
+    <script src="main.js" defer></script>
+    <!-- <script src="main.js" defer></script> -->
+  </head>
+  <body>
+    <div class="main-container">
+      <div class="timer-container">
+        <!-- Content for the first container -->
+        <div class="start-container">
+          <h1>00:00:00</h1>
+          <button class="start-btn">START</button>
+        </div>
+        <div class="paragraph-container">
+          <div class="lap-column">
+            <p>Placeholder 1</p>
+            <p>Placeholder 2</p>
+            <p>Placeholder 3</p>
+            <p>Placeholder 4</p>
+          </div>
+          <div class="btn-column">
+            <button>LAP</button>
+            <button>PAUSE</button>
+            <button>STOP</button>
+          </div>
+        </div>
+        <div class="input-container">
+          <form id="exercise-form">
+            <input type="text" placeholder="EXERCISE" id="input-exercise" />
+            <button type="submit" id="add-input">ADD</button>
+          </form>
+        </div>
+        <div class="train-card">
+          <div id="show-card" class="show-card"></div>
+          <div id="save-cont"></div>
+        </div>
+      </div>
+      <div class="result-container">
+        <button class="dropbtn" id="databtn">DATA</button>
+        <button class="deletebtn" id="deletebtn">DELETE</button>
+        <div class="dropdown-cont">
+          <p class="dropdown-content" id="data-dropdown"></p>
+        </div>
+      </div>
+      <div class="graph-container">
+        <div id="fitness-graph-container">
+          <div id="fitness-graph"></div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
