@@ -59,17 +59,17 @@ function displayCard() {
   function save() {
     // Save setts array to local storage
     saveToLocalStorage("setts", setts);
-
-    // Reset displayCard and graph
+    // createGraph([]);
     clearDisplayCard();
-    clearGraph();
+    // clearGraph();
+    // Reset displayCard and graph
   }
+  // createGraph(savedSetts);
 }
 
 function displaySavedData() {
   if (savedSetts) {
     dataDropdown.innerHTML = "";
-
     // Create dropdown items for each
     savedSetts.forEach((item) => {
       const listItem = document.createElement("p");
@@ -83,8 +83,8 @@ function displaySavedData() {
 function clearDisplayCard() {
   inputExercise.value = "";
   displayNumber = 0;
-  createCards.textContent = "";
-  saveCont.textContent = "";
+  createCards.innerHTML = "";
+  saveCont.innerHTML = "";
 
   exerciseCounter = 1;
 }
@@ -117,13 +117,16 @@ function clearLocalStorage() {
   localStorage.clear();
 }
 
-// DataBtn listen
 dataBtn.addEventListener("click", () => {
+  savedSetts = getFromLocalStorage("setts");
   if (savedSetts) {
     setts = savedSetts;
   }
-  createGraph();
+
   displaySavedData();
+
+  createGraph(savedSetts);
+  console.log(savedSetts);
 });
 
 deleteBtn.addEventListener("click", () => {
